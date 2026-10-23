@@ -29,3 +29,5 @@ The user chose the Measured Record cinematic opening above the existing hero. Pr
 
 ## GitHub and Hostinger handoff
 User authorized pushing the complete project and design deliverables to PrajaktaAdlytica/WattTrace-site. Repository root is the app root; design archives are in design/ and prior specifications in docs/planning/. Hostinger deployment instructions are in docs/HOSTINGER.md. Static output is dist/client. Domain connection and Hostinger deployment are not performed by the GitHub push.
+
+Hostinger constraint: all five Node.js Web App slots are already used. Use ordinary PHP/HTML hosting with branch `hostinger`; do not recommend adding a Node.js Web App. `.github/workflows/hostinger-static.yml` tests/builds `main` and updates the static branch. Do not edit built branch files directly. The user must connect the existing hosting account/domain; no Hostinger deployment or DNS modification has yet been performed.

@@ -1,0 +1,49 @@
+name: Build Hostinger static branch
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hostinger-static
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+      - name: Use Node.js 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build static website
+        run: npm run build
+      - name: Verify demo data and hosting output
+        run: npm test
+      - name: Update built Hostinger branch
+        env:
+          BUILD_DIR: ${{ runner.temp }}/watttrace-hostinger
+        run: |
+          set -euo pipefail
+          git fetch origin hostinger
+          git worktree add --detach "$BUILD_DIR" origin/hostinger
+          rsync -a --delete --exclude='.git' dist/client/ "$BUILD_DIR/"
+          cd "$BUILD_DIR"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --all
+          if git diff --cached --quiet; then
+            echo 'Built site is unchanged.'
+          else
+            git commit -m "Build site from ${GITHUB_SHA}"
+            git push origin HEAD:hostinger
+          fi
