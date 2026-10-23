@@ -67,3 +67,8 @@ Selected reference: `../watttrace-intro-directions/01-the-first-trace.png`. Comp
 Verified at 1440×900 and 390×844: all art loads, no horizontal overflow, wordmark/copy/controls remain readable, mobile stylus stays in frame. Chapter 2 seeks correctly; pause held image scale unchanged across subsequent observations; playback reaches chapter 3 and Replay. Explore WattTrace reaches the existing hero, pauses the intro and restores the light navigation. Mobile menu opens/closes. No browser or Studio errors. Remotion's development license reminder remains visible in console. Existing seven fixture/package tests pass; production build succeeds with the pre-existing large-bundle advisory. Player is split into a separate lazy-loaded chunk.
 
 Reduced-motion/save-data fallback and preference-change cleanup reviewed in source; OS preference switching was not exercised. No MP4 exported or site deployed. Captures: `qa/first-trace-desktop.png`, `qa/first-trace-mobile.png`, `qa/first-trace-hero-transition.png`. Pass for this local introduction scope.
+
+## Live intro autoplay regression — 2026-10-23
+Reproduced the production intro frozen on chapter 01 without a user gesture. The silent Remotion Player was unmuted, allowing an AudioContext resume to block frame advancement under browser autoplay policy. Set initiallyMuted and zero shared audio tags for this audio-free composition.
+
+Verified a fresh production-preview origin (port 4174), without any click: playback progressed through chapter 03 and reached Replay. Chapter 01 restart also completed. Production build and all seven existing tests pass. Capture: `qa/intro-autoplay-fix.png`.
