@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {intervals,initialCases,buildPacket,offers} from '../src/data.js';
+test('matched interval aggregation preserves missingness and zero-output exclusion',()=>{const eligible=intervals.filter(r=>r.eligible);assert.equal(eligible.length,10);assert.equal(intervals.filter(r=>r.kwh!==null).length,11);assert.equal(eligible.reduce((n,r)=>n+r.kwh,0),958);assert.equal(eligible.reduce((n,r)=>n+r.baseline,0),924);assert.equal(eligible.reduce((n,r)=>n+r.units,0),1030);assert.equal(intervals[6].kwh,null);assert.equal(intervals[3].ratio,null);});
+test('selected window residual and initial queue counts are consistent',()=>{const w=intervals.slice(4,6);assert.equal(w.reduce((n,r)=>n+r.kwh,0),206);assert.equal(w.reduce((n,r)=>n+r.baseline,0),172);assert.deepEqual(['Pending','Blocked','Completed','Rejected'].map(s=>initialCases.filter(c=>c.status===s).length),[4,2,2,2]);});
+test('export carries synthetic boundaries, evidence and all five offers remain distinct',()=>{const p=buildPacket(initialCases);assert.match(p.label,/DEMO/);assert.match(p.caveat,/No production connection/);assert.ok(p.cases.every(r=>r.synthetic));assert.ok(p.intervals.every(r=>r.synthetic));assert.equal(p.sources.length,4);assert.equal(new Set(offers.map(o=>o.slug)).size,5);});

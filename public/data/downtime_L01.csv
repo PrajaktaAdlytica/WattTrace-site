@@ -1,0 +1,2 @@
+label,start_utc,end_utc,process_id,reason
+DEMO/SIMULATED,2026-10-05T08:45:00Z,2026-10-05T09:00:00Z,DEMO-L01,Illustrative planned downtime
